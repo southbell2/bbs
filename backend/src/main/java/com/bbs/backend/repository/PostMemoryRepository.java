@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public class PostMemoryRepository implements PostRepository {
     private final List<PostEntity> postEntityList = new ArrayList<>();
+    private int postNumber;
 
     @Override
     public List<PostEntity> getPostList() {
@@ -17,6 +18,9 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public PostEntity savePost(PostEntity postEntity) {
-        return null;
+        postNumber++;
+        postEntity.setPostNumber(postNumber);
+        postEntityList.add(postEntity);
+        return postEntity;
     }
 }

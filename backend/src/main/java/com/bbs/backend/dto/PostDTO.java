@@ -1,5 +1,6 @@
 package com.bbs.backend.dto;
 
+import com.bbs.backend.entity.PostEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,4 +17,17 @@ public class PostDTO {
     private LocalDateTime dateTime;
     private int postNumber;
     private int postViews;
+
+    public static PostEntity toEntity(final PostDTO postDTO) {
+        PostEntity postEntity = PostEntity.builder()
+                .postViews(postDTO.getPostViews())
+                .postNumber(postDTO.getPostNumber())
+                .content(postDTO.getContent())
+                .dateTime(postDTO.getDateTime())
+                .nickname(postDTO.getNickname())
+                .title(postDTO.getTitle())
+                .build();
+
+        return postEntity;
+    }
 }

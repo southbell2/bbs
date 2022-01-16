@@ -25,7 +25,7 @@
                 <tbody>
                 <tr th:each="post : ${postList}">
                     <td th:text="${post.postNumber}">1</td>
-                    <td><a th:href="@{|/bbs/list/${post.postNumber}|}" th:text="${post.title}">hi</a></td>
+                    <td><a th:href="@{|/bbs/posts/${post.postNumber}|}" th:text="${post.title}">hi</a></td>
                     <td th:text="${post.nickname}">hong</td>
                     <td th:text="|${post.getDateTime().getMonthValue()}.${post.getDateTime().getDayOfMonth()}|">2017</td>
                     <td th:text="${post.postViews}">1</td>
