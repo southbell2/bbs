@@ -1,20 +1,24 @@
 package com.bbs.backend.controller;
 
 import com.bbs.backend.dto.PostDTO;
+import com.bbs.backend.dto.ResponseDTO;
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/bbs")
 public class PostController {
 
@@ -22,34 +26,28 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public String showPostList(Model model) {
+    public ResponseEntity<?> showPostList() {
         List<PostEntity> postEntities = postService.getPostList();
-        List<PostDTO> postDTOS = postEntities.stream().map(
-                postEntity -> PostDTO.builder()
-                        .title(postEntity.getTitle())
-                        .content(postEntity.getContent())
-                        .dateTime(postEntity.getDateTime())
-                        .postNumber(postEntity.getPostNumber())
-                        .postViews(postEntity.getPostViews())
-                        .nickname(postEntity.getNickname())
-                        .build()
-        ).collect(Collectors.toList());
-        model.addAttribute("postList", postDTOS);
+        List<PostDTO> postDTOS = postEntities.stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
 
-        return "/bbs/posts";
+        ResponseDTO<PostDTO> responseDTO = ResponseDTO.<PostDTO>builder().data(postDTOS).build();
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/post")
-    public String postCreationPage() {
-        return "/bbs/post";
-    }
+//    @GetMapping("/post")
+//    public String postCreationPage() {
+//        return "/bbs/post";
+//    }
 
     @PostMapping("/post")
-    public String addPost(@ModelAttribute PostDTO postDTO) {
+    public void addPost(@RequestBody PostDTO postDTO, HttpServletResponse response) throws IOException {
         postDTO.setDateTime(LocalDateTime.now());
-        postService.savePost(postDTO);
+        postService.savePost(PostDTO.toEntity(postDTO));
 
-        return "redirect:/bbs/posts";
+        response.sendRedirect("http://localhost:8080/bbs/posts");
     }
 
 }

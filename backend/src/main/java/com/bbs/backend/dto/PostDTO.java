@@ -18,6 +18,15 @@ public class PostDTO {
     private int postNumber;
     private int postViews;
 
+    public PostDTO(final PostEntity postEntity) {
+        this.nickname = postEntity.getNickname();
+        this.title = postEntity.getTitle();
+        this.content = postEntity.getContent();
+        this.dateTime = postEntity.getDateTime();
+        this.postNumber = postEntity.getPostNumber();
+        this.postViews = postEntity.getPostViews();
+    }
+
     public static PostEntity toEntity(final PostDTO postDTO) {
         PostEntity postEntity = PostEntity.builder()
                 .postViews(postDTO.getPostViews())

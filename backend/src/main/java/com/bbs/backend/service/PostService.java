@@ -18,8 +18,7 @@ public class PostService {
     public List<PostEntity> getPostList() {
         return postRepository.getPostList();
     }
-    public void savePost(PostDTO postDTO) {
-        PostEntity postEntity = PostDTO.toEntity(postDTO);
+    public void savePost(PostEntity postEntity) {
         postRepository.savePost(postEntity);
     }
 
