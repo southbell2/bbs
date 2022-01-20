@@ -18,8 +18,13 @@ public class PostService {
     public List<PostEntity> getPostList() {
         return postRepository.getPostList();
     }
+
     public void savePost(PostEntity postEntity) {
         postRepository.savePost(postEntity);
+    }
+
+    public PostEntity getPostByNumber(int number) {
+        return postRepository.getPostByNumber(number);
     }
 
 }

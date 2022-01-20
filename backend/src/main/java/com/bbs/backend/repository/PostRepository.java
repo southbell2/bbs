@@ -7,4 +7,5 @@ import java.util.List;
 public interface PostRepository {
     List<PostEntity> getPostList();
     PostEntity savePost(PostEntity postEntity);
+    PostEntity getPostByNumber(int number);
 }

@@ -23,4 +23,15 @@ public class PostMemoryRepository implements PostRepository {
         postEntityList.add(postEntity);
         return postEntity;
     }
+
+    @Override
+    public PostEntity getPostByNumber(int postNumber) {
+        for (PostEntity postEntity : postEntityList) {
+            if (postEntity.getPostNumber() == postNumber) {
+                return postEntity;
+            }
+        }
+
+        return null;
+    }
 }
