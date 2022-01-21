@@ -17,11 +17,10 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public PostEntity savePost(PostEntity postEntity) {
+    public void savePost(PostEntity postEntity) {
         postNumber++;
         postEntity.setPostNumber(postNumber);
         postEntityList.add(postEntity);
-        return postEntity;
     }
 
     @Override
@@ -33,5 +32,26 @@ public class PostMemoryRepository implements PostRepository {
         }
 
         return null;
+    }
+
+    @Override
+    public void updatePost(PostEntity postEntity) {
+        for (PostEntity post : postEntityList) {
+            if (post.getPostNumber() == postEntity.getPostNumber()) {
+                post.setTitle(postEntity.getTitle());
+                post.setContent(postEntity.getContent());
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void deletePost(int number) {
+        for (int i = 0; i < postEntityList.size(); i++) {
+            if (postEntityList.get(i).getPostNumber() == number) {
+                postEntityList.remove(i);
+                return;
+            }
+        }
     }
 }

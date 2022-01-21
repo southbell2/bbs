@@ -27,41 +27,52 @@ public class PostController {
 
     @GetMapping("/posts")
     @ApiOperation(value = "게시글 목록 얻기", notes = "게시글 목록을 보여줍니다.")
-    public ResponseEntity<?> showPostList() {
+    public List<PostDTO> getPostList() {
         List<PostEntity> postEntities = postService.getPostList();
         List<PostDTO> postDTOS = postEntities.stream()
                 .map(PostDTO::new)
                 .collect(Collectors.toList());
 
-        ResponseDTO<PostDTO> responseDTO = ResponseDTO.<PostDTO>builder().data(postDTOS).build();
-
-        return ResponseEntity.ok().body(responseDTO);
+        return postDTOS;
     }
 
     @GetMapping("/posts/{number}")
     @ApiOperation(value = "특정 게시글 보기", notes = "게시글 번호로 특정 게시글 보기")
-    public ResponseEntity<?> getPost(@PathVariable int number) {
+    public PostDTO getPost(@PathVariable int number) {
         PostEntity postEntity = postService.getPostByNumber(number);
         if (postEntity == null) {
             throw new PostNotFoundException(String.format("Post Number %s not found", number));
         }
         PostDTO postDTO = new PostDTO(postEntity);
 
-        return ResponseEntity.ok().body(postDTO);
+        return postDTO;
     }
-
-//    @GetMapping("/post")
-//    public String postCreationPage() {
-//        return "/bbs/post";
-//    }
 
     @PostMapping("/post")
     @ApiOperation(value = "게시글 작성", notes = "게시글 작성 완료시 게시글 목록으로 리다이렉트 합니다.")
-    public void addPost(@RequestBody PostDTO postDTO, HttpServletResponse response) throws IOException {
+    public void createPost(@RequestBody PostDTO postDTO, HttpServletResponse response) throws IOException {
         postDTO.setDateTime(LocalDateTime.now());
         postService.savePost(PostDTO.toEntity(postDTO));
 
         response.sendRedirect("http://localhost:8080/bbs/posts");
+    }
+
+    @PutMapping("/posts/{number}")
+    @ApiOperation(value = "게시글 수정")
+    public ResponseEntity<?> updatePost(@RequestBody PostDTO postDTO, @PathVariable int number) {
+        PostEntity postEntity = PostDTO.toEntity(postDTO);
+        postEntity.setPostNumber(number);
+        postService.updatePost(postEntity);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/posts/{number}")
+    @ApiOperation(value = "게시글 삭제")
+    public ResponseEntity<?> deletePost(@PathVariable  int number) {
+        postService.deletePost(number);
+
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -27,4 +27,12 @@ public class PostService {
         return postRepository.getPostByNumber(number);
     }
 
+    public void updatePost(PostEntity postEntity) {
+        postRepository.updatePost(postEntity);
+    }
+
+    public void deletePost(int number) {
+        postRepository.deletePost(number);
+    }
+
 }
