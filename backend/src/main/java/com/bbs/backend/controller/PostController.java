@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +30,7 @@ public class PostController {
     @GetMapping("/posts")
     @ApiOperation(value = "게시글 목록 얻기", notes = "게시글 목록을 보여줍니다.")
     public List<PostDTO> getPostList() {
-        List<PostEntity> postEntities = postService.getPostList();
+        List<PostEntity> postEntities = postService.findAll();
         List<PostDTO> postDTOS = postEntities.stream()
                 .map(PostDTO::new)
                 .collect(Collectors.toList());
@@ -39,7 +41,7 @@ public class PostController {
     @GetMapping("/posts/{number}")
     @ApiOperation(value = "특정 게시글 보기", notes = "게시글 번호로 특정 게시글 보기")
     public PostDTO getPost(@PathVariable int number) {
-        PostEntity postEntity = postService.getPostByNumber(number);
+        PostEntity postEntity = postService.findPostByNumber(number);
         if (postEntity == null) {
             throw new PostNotFoundException(String.format("Post Number %s not found", number));
         }
@@ -50,11 +52,16 @@ public class PostController {
 
     @PostMapping("/post")
     @ApiOperation(value = "게시글 작성", notes = "게시글 작성 완료시 게시글 목록으로 리다이렉트 합니다.")
-    public void createPost(@RequestBody PostDTO postDTO, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> createPost(@RequestBody PostDTO postDTO) {
         postDTO.setDateTime(LocalDateTime.now());
-        postService.savePost(PostDTO.toEntity(postDTO));
+        PostEntity savedPostEntity = postService.createPost(PostDTO.toEntity(postDTO));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("s")
+                .path("/{number}")
+                .buildAndExpand(savedPostEntity.getPostNumber())
+                .toUri();
 
-        response.sendRedirect("http://localhost:8080/bbs/posts");
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/posts/{number}")

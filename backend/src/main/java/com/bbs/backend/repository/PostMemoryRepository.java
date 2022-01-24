@@ -12,21 +12,24 @@ public class PostMemoryRepository implements PostRepository {
     private int postNumber;
 
     @Override
-    public List<PostEntity> getPostList() {
+    public List<PostEntity> findAll() {
         return postEntityList;
     }
 
     @Override
-    public void savePost(PostEntity postEntity) {
+    public PostEntity createPost(PostEntity postEntity) {
         postNumber++;
         postEntity.setPostNumber(postNumber);
         postEntityList.add(postEntity);
+
+        return postEntity;
     }
 
     @Override
-    public PostEntity getPostByNumber(int postNumber) {
+    public PostEntity findPostByNumber(int postNumber) {
         for (PostEntity postEntity : postEntityList) {
             if (postEntity.getPostNumber() == postNumber) {
+                postEntity.setPostViews(postEntity.getPostViews() + 1);
                 return postEntity;
             }
         }

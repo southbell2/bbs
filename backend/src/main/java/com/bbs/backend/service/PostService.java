@@ -15,16 +15,16 @@ public class PostService {
     @Autowired
     private final PostRepository postRepository;
 
-    public List<PostEntity> getPostList() {
-        return postRepository.getPostList();
+    public List<PostEntity> findAll() {
+        return postRepository.findAll();
     }
 
-    public void savePost(PostEntity postEntity) {
-        postRepository.savePost(postEntity);
+    public PostEntity createPost(PostEntity postEntity) {
+        return postRepository.createPost(postEntity);
     }
 
-    public PostEntity getPostByNumber(int number) {
-        return postRepository.getPostByNumber(number);
+    public PostEntity findPostByNumber(int number) {
+        return postRepository.findPostByNumber(number);
     }
 
     public void updatePost(PostEntity postEntity) {
