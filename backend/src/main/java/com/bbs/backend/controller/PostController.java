@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +30,7 @@ public class PostController {
 
     @GetMapping("/posts")
     @ApiOperation(value = "게시글 목록 얻기", notes = "게시글 목록을 보여줍니다.")
-    public List<PostDTO> getPostList() {
+    public List<PostDTO> getPostList(@RequestParam(defaultValue = "1") Integer page) {
         List<PostEntity> postEntities = postService.findAll();
         List<PostDTO> postDTOS = postEntities.stream()
                 .map(PostDTO::new)
@@ -52,7 +53,7 @@ public class PostController {
 
     @PostMapping("/post")
     @ApiOperation(value = "게시글 작성", notes = "게시글 작성 완료시 게시글 목록으로 리다이렉트 합니다.")
-    public ResponseEntity<?> createPost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity<?> createPost(@Validated @RequestBody PostDTO postDTO) {
         postDTO.setDateTime(LocalDateTime.now());
         PostEntity savedPostEntity = postService.createPost(PostDTO.toEntity(postDTO));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -66,7 +67,7 @@ public class PostController {
 
     @PutMapping("/posts/{number}")
     @ApiOperation(value = "게시글 수정")
-    public ResponseEntity<?> updatePost(@RequestBody PostDTO postDTO, @PathVariable int number) {
+    public ResponseEntity<?> updatePost(@Validated @RequestBody PostDTO postDTO, @PathVariable int number) {
         PostEntity postEntity = PostDTO.toEntity(postDTO);
         postEntity.setPostNumber(number);
         postService.updatePost(postEntity);

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Builder
@@ -15,15 +16,27 @@ import java.time.LocalDateTime;
 @ApiModel(description = "게시글 상세 정보를 위한 객체")
 public class PostDTO {
     @ApiModelProperty("글쓴이")
+    @NotBlank
+    @Size(max=15)
     private String nickname;
+
     @ApiModelProperty("글 제목")
+    @NotBlank
+    @Size(max=50)
     private String title;
+
     @ApiModelProperty("글 내용")
+    @NotBlank
+    @Size(max=5000)
     private String content;
+
     @ApiModelProperty("작성 날짜와 시간 입력 X")
+    @PastOrPresent
     private LocalDateTime dateTime;
+
     @ApiModelProperty("글 번호 입력 X")
     private int postNumber;
+
     @ApiModelProperty("조회수 입력 X")
     private int postViews;
 
