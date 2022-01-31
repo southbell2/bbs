@@ -3,6 +3,7 @@ package com.bbs.backend.repository;
 import com.bbs.backend.entity.PostEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class PostMemoryRepository implements PostRepository {
 
     @Override
     public PostEntity createPost(PostEntity postEntity) {
-        postNumber++;
-        postEntity.setPostNumber(postNumber);
+        postEntity.setPostNumber(++postNumber);
+        postEntity.setDateTime(LocalDateTime.now());
         postEntityList.add(postEntity);
 
         return postEntity;
@@ -38,9 +39,9 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public void updatePost(PostEntity postEntity) {
+    public void updatePost(PostEntity postEntity, int postNumber) {
         for (PostEntity post : postEntityList) {
-            if (post.getPostNumber() == postEntity.getPostNumber()) {
+            if (post.getPostNumber() == postNumber) {
                 post.setTitle(postEntity.getTitle());
                 post.setContent(postEntity.getContent());
                 return;

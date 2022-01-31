@@ -8,7 +8,7 @@ public interface PostRepository {
     List<PostEntity> findAll();
     PostEntity createPost(PostEntity postEntity);
     PostEntity findPostByNumber(int number);
-    void updatePost(PostEntity postEntity);
+    void updatePost(PostEntity postEntity, int postNumber);
 
     void deletePost(int number);
 }
