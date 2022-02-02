@@ -16,5 +16,5 @@ public class PostEntity {
     private LocalDateTime dateTime;
     private int postNumber;
     private int postViews;
-    private String email;
+    private String userId;
 }

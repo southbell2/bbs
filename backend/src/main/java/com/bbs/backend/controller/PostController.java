@@ -1,7 +1,7 @@
 package com.bbs.backend.controller;
 
-import com.bbs.backend.dto.CreatePostDTO;
-import com.bbs.backend.dto.GetPostDTO;
+import com.bbs.backend.dto.post.CreatePostDTO;
+import com.bbs.backend.dto.post.GetPostDTO;
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.exception.PostNotFoundException;
 import com.bbs.backend.repository.PostRepository;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +49,7 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    @ApiOperation(value = "게시글 작성", notes = "게시글 작성 완료시 게시글 목록으로 리다이렉트 합니다.")
+    @ApiOperation(value = "게시글 작성")
     public ResponseEntity<?> createPost(@Validated @RequestBody CreatePostDTO createPostDTO) {
         PostEntity savedPostEntity = postRepository.createPost(CreatePostDTO.toEntity(createPostDTO));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

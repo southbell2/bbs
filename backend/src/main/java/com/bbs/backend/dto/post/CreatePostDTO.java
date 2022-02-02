@@ -1,4 +1,4 @@
-package com.bbs.backend.dto;
+package com.bbs.backend.dto.post;
 
 import com.bbs.backend.entity.PostEntity;
 import lombok.AllArgsConstructor;
