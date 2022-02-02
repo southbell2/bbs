@@ -41,4 +41,5 @@ public class UserMemoryRepository implements UserRepository {
                 .filter(user -> user.getEmail().equals(email))
                 .findAny();
     }
+
 }

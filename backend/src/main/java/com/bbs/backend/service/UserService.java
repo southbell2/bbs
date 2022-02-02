@@ -35,5 +35,8 @@ public class UserService {
                 .filter(user -> user.getPassword().equals(password));
     }
 
+    public UserEntity getUserInfo(String id) {
+        return userRepository.findById(id).get();
+    }
 
 }
