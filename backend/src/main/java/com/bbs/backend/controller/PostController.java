@@ -1,5 +1,6 @@
 package com.bbs.backend.controller;
 
+import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.post.CreatePostDTO;
 import com.bbs.backend.dto.post.GetPostDTO;
 import com.bbs.backend.entity.PostEntity;
@@ -13,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,8 +53,13 @@ public class PostController {
 
     @PostMapping("/post")
     @ApiOperation(value = "게시글 작성")
-    public ResponseEntity<?> createPost(@Validated @RequestBody CreatePostDTO createPostDTO) {
-        PostEntity savedPostEntity = postRepository.createPost(CreatePostDTO.toEntity(createPostDTO));
+    public ResponseEntity<?> createPost(@Validated @RequestBody CreatePostDTO createPostDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
+        postEntity.setUserId((String)session.getAttribute(SessionConst.LOGIN_USER));
+
+        PostEntity savedPostEntity = postRepository.createPost(postEntity);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("s")
                 .path("/{number}")
@@ -63,7 +71,14 @@ public class PostController {
 
     @PutMapping("/posts/{number}")
     @ApiOperation(value = "게시글 수정")
-    public ResponseEntity<?> updatePost(@Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number) {
+    public ResponseEntity<?> updatePost(@Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number, HttpServletRequest request) {
+        PostEntity foundPostEntity = postRepository.findPostByNumber(number);
+        HttpSession session = request.getSession(false);
+        String sessionUserId = (String) session.getAttribute(SessionConst.LOGIN_USER);
+        if (sessionUserId != foundPostEntity.getUserId()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
         postRepository.updatePost(postEntity, number);
 
@@ -72,9 +87,15 @@ public class PostController {
 
     @DeleteMapping("/posts/{number}")
     @ApiOperation(value = "게시글 삭제")
-    public ResponseEntity<?> deletePost(@PathVariable  int number) {
-        postRepository.deletePost(number);
+    public ResponseEntity<?> deletePost(@PathVariable  int number, HttpServletRequest request) {
+        PostEntity foundPostEntity = postRepository.findPostByNumber(number);
+        HttpSession session = request.getSession(false);
+        String sessionUserId = (String) session.getAttribute(SessionConst.LOGIN_USER);
+        if (sessionUserId != foundPostEntity.getUserId()) {
+            return ResponseEntity.badRequest().build();
+        }
 
+        postRepository.deletePost(number);
         return ResponseEntity.ok().build();
     }
 

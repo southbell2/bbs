@@ -1,5 +1,6 @@
 package com.bbs.backend.controller;
 
+import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.user.LoginDTO;
 import com.bbs.backend.dto.user.UserDTO;
 import com.bbs.backend.dto.user.UserInfoDTO;
@@ -21,7 +22,6 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    public static final String LOGIN_USER = "loginUser";
 
     @PostMapping
     public ResponseEntity<?> createUser(@Validated @RequestBody UserDTO userDTO) {
@@ -43,7 +43,7 @@ public class UserController {
         Optional<UserEntity> loginOpt = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
         if (loginOpt.isPresent()) {
             HttpSession session = request.getSession();
-            session.setAttribute(LOGIN_USER, loginOpt.get().getId());
+            session.setAttribute(SessionConst.LOGIN_USER, loginOpt.get().getId());
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/yourAccount")
-    public ResponseEntity<UserInfoDTO> getUserInfo(@SessionAttribute(name = LOGIN_USER, required = false) String id) {
+    public ResponseEntity<UserInfoDTO> getUserInfo(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String id) {
         UserInfoDTO userInfoDTO = new UserInfoDTO(userService.getUserInfo(id));
 
         return ResponseEntity.ok(userInfoDTO);
@@ -70,7 +70,7 @@ public class UserController {
     @DeleteMapping("/yourAccount")
     public ResponseEntity<?> deleteUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        String id = (String)session.getAttribute(LOGIN_USER);
+        String id = (String)session.getAttribute(SessionConst.LOGIN_USER);
         userService.deleteUser(id);
         session.invalidate();
 
