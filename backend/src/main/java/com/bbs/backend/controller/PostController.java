@@ -73,9 +73,13 @@ public class PostController {
     @ApiOperation(value = "게시글 수정")
     public ResponseEntity<?> updatePost(@Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number, HttpServletRequest request) {
         PostEntity foundPostEntity = postRepository.findPostByNumber(number);
+        if (foundPostEntity == null) {
+            throw new PostNotFoundException(String.format("Post Number %s not found", number));
+        }
+
         HttpSession session = request.getSession(false);
         String sessionUserId = (String) session.getAttribute(SessionConst.LOGIN_USER);
-        if (sessionUserId != foundPostEntity.getUserId()) {
+        if (!sessionUserId.equals(foundPostEntity.getUserId())) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -91,7 +95,7 @@ public class PostController {
         PostEntity foundPostEntity = postRepository.findPostByNumber(number);
         HttpSession session = request.getSession(false);
         String sessionUserId = (String) session.getAttribute(SessionConst.LOGIN_USER);
-        if (sessionUserId != foundPostEntity.getUserId()) {
+        if (!sessionUserId.equals(foundPostEntity.getUserId())) {
             return ResponseEntity.badRequest().build();
         }
 
