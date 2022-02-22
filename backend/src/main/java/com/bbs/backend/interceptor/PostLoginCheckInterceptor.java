@@ -2,6 +2,7 @@ package com.bbs.backend.interceptor;
 
 import com.bbs.backend.SessionConst;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ public class PostLoginCheckInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(SessionConst.LOGIN_USER) == null) {
+            response.setStatus(401);
             return false;
         }
         return true;
