@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostEntity {
-    private String nickname;
+    private String username;
     private String title;
     private String content;
-    private LocalDateTime dateTime;
-    private int postNumber;
-    private int postViews;
+    private LocalDateTime createdAt;
+    private int id;
+    private int views;
     private String userId;
 }

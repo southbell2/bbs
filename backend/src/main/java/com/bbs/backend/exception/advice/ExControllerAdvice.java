@@ -2,6 +2,7 @@ package com.bbs.backend.exception.advice;
 
 import com.bbs.backend.exception.ExceptionResponse;
 import com.bbs.backend.exception.PostNotFoundException;
+import com.bbs.backend.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +17,12 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> postNotFoundEx(PostNotFoundException e, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> userNotFoundEx(UserNotFoundException e, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }

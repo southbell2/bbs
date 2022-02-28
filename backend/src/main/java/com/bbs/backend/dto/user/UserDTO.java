@@ -23,13 +23,13 @@ public class UserDTO {
 
     @Size(min = 2, max = 10)
     @NotBlank
-    private String nickname;
+    private String username;
 
     public static UserEntity toEntity(UserDTO userDTO) {
         return UserEntity.builder()
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
-                .nickname(userDTO.getNickname())
+                .username(userDTO.getUsername())
                 .build();
     }
 }

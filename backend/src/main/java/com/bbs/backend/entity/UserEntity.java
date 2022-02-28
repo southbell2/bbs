@@ -13,6 +13,6 @@ public class UserEntity {
     private String id;
     private String email;
     private String password;
-    private String nickname;
+    private String username;
     private LocalDate joinDate;
 }

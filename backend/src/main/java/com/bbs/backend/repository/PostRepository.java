@@ -3,12 +3,13 @@ package com.bbs.backend.repository;
 import com.bbs.backend.entity.PostEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository {
-    List<PostEntity> findAll();
+    List<PostEntity> findPageByNumber(int number);
     PostEntity createPost(PostEntity postEntity);
-    PostEntity findPostByNumber(int number);
-    void updatePost(PostEntity postEntity, int postNumber);
-
-    void deletePost(int number);
+    Optional<PostEntity> findPostById(int id);
+    void updatePost(PostEntity postEntity);
+    int getAllPostNumber();
+    void deletePost(int id);
 }

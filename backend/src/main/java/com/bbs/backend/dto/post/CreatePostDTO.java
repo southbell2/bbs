@@ -15,10 +15,6 @@ import javax.validation.constraints.Size;
 @Getter
 public class CreatePostDTO {
     @NotBlank
-    @Size(max=15)
-    private String nickname;
-
-    @NotBlank
     @Size(max=50)
     private String title;
 
@@ -28,7 +24,6 @@ public class CreatePostDTO {
 
     public static PostEntity toEntity(CreatePostDTO createPostDTO) {
         return PostEntity.builder()
-                .nickname(createPostDTO.getNickname())
                 .title(createPostDTO.getTitle())
                 .content(createPostDTO.getContent())
                 .build();

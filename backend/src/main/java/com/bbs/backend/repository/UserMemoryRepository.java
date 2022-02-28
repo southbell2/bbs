@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.*;
 
-@Repository
+//@Repository
 public class UserMemoryRepository implements UserRepository {
     private Map<String, UserEntity> store = new HashMap<>();
 
@@ -30,7 +30,6 @@ public class UserMemoryRepository implements UserRepository {
         return Optional.ofNullable(store.get(id));
     }
 
-    @Override
     public List<UserEntity> findAll() {
         return new ArrayList<>(store.values());
     }
