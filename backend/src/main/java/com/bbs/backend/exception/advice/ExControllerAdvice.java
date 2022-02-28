@@ -1,6 +1,6 @@
 package com.bbs.backend.exception.advice;
 
-import com.bbs.backend.exception.ExceptionResponse;
+import com.bbs.backend.dto.ExceptionDTO;
 import com.bbs.backend.exception.PostNotFoundException;
 import com.bbs.backend.exception.UserAlreadyExistsEx;
 import com.bbs.backend.exception.UserNotFoundException;
@@ -16,20 +16,20 @@ import java.time.LocalDateTime;
 public class ExControllerAdvice {
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> postNotFoundEx(PostNotFoundException e, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExceptionDTO> postNotFoundEx(PostNotFoundException e, WebRequest request) {
+        ExceptionDTO exceptionDTO = new ExceptionDTO(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> userNotFoundEx(UserNotFoundException e, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExceptionDTO> userNotFoundEx(UserNotFoundException e, WebRequest request) {
+        ExceptionDTO exceptionDTO = new ExceptionDTO(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> userAlreadyEx(UserAlreadyExistsEx e, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ExceptionDTO> userAlreadyEx(UserAlreadyExistsEx e, WebRequest request) {
+        ExceptionDTO exceptionDTO = new ExceptionDTO(LocalDateTime.now(), e.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.BAD_REQUEST);
     }
 }

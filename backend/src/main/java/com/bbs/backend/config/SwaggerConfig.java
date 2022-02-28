@@ -1,5 +1,7 @@
 package com.bbs.backend.config;
 
+import com.bbs.backend.dto.ExceptionDTO;
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.service.ApiInfo;
@@ -13,6 +15,12 @@ import java.util.Set;
 @Configuration
 public class SwaggerConfig {
 
+    private final TypeResolver typeResolver;
+
+    public SwaggerConfig(final TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
+    }
+
     private static final ApiInfo DEFAULT_API_INFO = new ApiInfo("BBS API", "HTTP API FOR FRONT END", "1.0", "urn:tos",
             null, null, null);
 
@@ -25,6 +33,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(DEFAULT_API_INFO)
                 .produces(DEFAULT_PRODUCES_AND_CONSUMES)
-                .consumes(DEFAULT_PRODUCES_AND_CONSUMES);
+                .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
+                .additionalModels(typeResolver.resolve(ExceptionDTO.class));
     }
 }
