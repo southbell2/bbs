@@ -41,4 +41,9 @@ public class UserMemoryRepository implements UserRepository {
                 .findAny();
     }
 
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return Optional.empty();
+    }
+
 }

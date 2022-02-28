@@ -5,6 +5,7 @@ import com.bbs.backend.dto.user.LoginDTO;
 import com.bbs.backend.dto.user.UserDTO;
 import com.bbs.backend.dto.user.UserInfoDTO;
 import com.bbs.backend.entity.UserEntity;
+import com.bbs.backend.exception.UserAlreadyExistsEx;
 import com.bbs.backend.exception.UserNotFoundException;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,18 +30,21 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@Validated @RequestBody UserDTO userDTO) {
         UserEntity userEntity = UserDTO.toEntity(userDTO);
-        userEntity.setId(UUID.randomUUID().toString());
-
-        if (userService.saveUser(userEntity)) {
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/yourAccount")
-                    .build()
-                    .toUri();
-            return ResponseEntity.created(location).build();
-        } else {
-            //예외 처리는 나중에
-            return ResponseEntity.badRequest().build();
+        if (userService.checkExistEmail(userEntity.getEmail())) {
+            throw new UserAlreadyExistsEx("이미 존재하는 이메일입니다.");
         }
+
+        if (userService.checkExistUsername(userEntity.getUsername())) {
+            throw new UserAlreadyExistsEx("이미 존재하는 닉네임입니다.");
+        }
+
+        userEntity.setId(UUID.randomUUID().toString());
+        userService.saveUser(userEntity);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/yourAccount")
+                .build()
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/login")

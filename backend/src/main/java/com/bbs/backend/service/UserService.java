@@ -16,14 +16,16 @@ public class UserService {
      * 회원 가입에 성공하면 true 를 반환한다.
      * 가입하려고 하는 이메일이 이미 존재할 시에는 false 를 반환한다.
      */
-    public boolean saveUser(UserEntity userEntity) {
-        Optional<UserEntity> foundUserByEmail = userRepository.findByEmail(userEntity.getEmail());
-        if (foundUserByEmail.isPresent()) {
-            return false;
-        } else {
-            userRepository.saveUser(userEntity);
-            return true;
-        }
+    public UserEntity saveUser(UserEntity userEntity) {
+        return userRepository.saveUser(userEntity);
+    }
+
+    public boolean checkExistEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean checkExistUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     public void deleteUser(String id) {

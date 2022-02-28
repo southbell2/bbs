@@ -53,6 +53,16 @@ public class JdbcUserRepository implements UserRepository {
         return Optional.ofNullable(userEntity);
     }
 
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        UserEntity userEntity = null;
+        try {
+            userEntity = jdbcTemplate.queryForObject("SELECT * FROM users WHERE username=?", userRowMapper(), username);
+        } catch(EmptyResultDataAccessException ignored) {}
+
+        return Optional.ofNullable(userEntity);
+    }
+
     private RowMapper<UserEntity> userRowMapper() {
         return (rs, rowNum) -> {
             UserEntity userEntity = new UserEntity();

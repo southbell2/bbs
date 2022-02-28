@@ -13,4 +13,6 @@ public interface UserRepository {
     Optional<UserEntity> findById(String id);
 
     Optional<UserEntity> findByEmail(String email);
+
+    Optional<UserEntity> findByUsername(String username);
 }
