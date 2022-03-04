@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "게시글 상세 정보를 위한 객체")
 public class GetPostDTO {
 
     private String username;

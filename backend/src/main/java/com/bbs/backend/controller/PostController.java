@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,7 +34,6 @@ public class PostController {
     private final UserService userService;
 
     @GetMapping("/posts")
-    @ApiOperation(value = "게시글 목록 얻기")
     public PageDTO getPostList(@RequestParam(defaultValue = "1") Integer page) {
         List<PostEntity> postEntityList = postRepository.findPageByNumber(page);
         if (postEntityList.size() == 0) {
@@ -60,7 +58,6 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    @ApiOperation(value = "게시글 작성")
     public ResponseEntity<?> createPost(@Validated @RequestBody CreatePostDTO createPostDTO, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         String userId = (String) session.getAttribute(SessionConst.LOGIN_USER);
@@ -80,7 +77,6 @@ public class PostController {
     }
 
     @PutMapping("/posts/{number}")
-    @ApiOperation(value = "게시글 수정")
     public ResponseEntity<?> updatePost(
             @Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
@@ -98,7 +94,6 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{number}")
-    @ApiOperation(value = "게시글 삭제")
     public ResponseEntity<?> deletePost(
             @PathVariable  int number,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
