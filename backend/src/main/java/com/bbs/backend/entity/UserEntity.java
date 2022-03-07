@@ -5,8 +5,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Builder
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {

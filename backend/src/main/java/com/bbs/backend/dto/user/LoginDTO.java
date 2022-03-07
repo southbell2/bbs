@@ -5,8 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 @Builder
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginDTO {

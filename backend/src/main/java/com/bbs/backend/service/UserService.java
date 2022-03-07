@@ -12,10 +12,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    /**
-     * 회원 가입에 성공하면 true 를 반환한다.
-     * 가입하려고 하는 이메일이 이미 존재할 시에는 false 를 반환한다.
-     */
     public UserEntity saveUser(UserEntity userEntity) {
         return userRepository.saveUser(userEntity);
     }

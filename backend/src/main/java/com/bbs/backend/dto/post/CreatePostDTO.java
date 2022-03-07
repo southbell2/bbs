@@ -1,18 +1,14 @@
 package com.bbs.backend.dto.post;
 
 import com.bbs.backend.entity.PostEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
+@Data
 public class CreatePostDTO {
     @NotBlank(message = "제목을 입력하세요")
     @Size(max=50, message = "제목은 50자를 넘으면 안 됩니다")
