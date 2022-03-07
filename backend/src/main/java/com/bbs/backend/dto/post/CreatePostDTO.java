@@ -14,12 +14,12 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 public class CreatePostDTO {
-    @NotBlank
-    @Size(max=50)
+    @NotBlank(message = "제목을 입력하세요")
+    @Size(max=50, message = "제목은 50자를 넘으면 안 됩니다")
     private String title;
 
-    @NotBlank
-    @Size(max=5000)
+    @NotBlank(message = "내용을 입력하세요")
+    @Size(max=5000, message = "내용은 5000자를 넘으면 안 됩니다")
     private String content;
 
     public static PostEntity toEntity(CreatePostDTO createPostDTO) {

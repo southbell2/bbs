@@ -5,8 +5,9 @@ import com.bbs.backend.dto.user.LoginDTO;
 import com.bbs.backend.dto.user.UserDTO;
 import com.bbs.backend.dto.user.UserInfoDTO;
 import com.bbs.backend.entity.UserEntity;
-import com.bbs.backend.exception.UserAlreadyExistsEx;
-import com.bbs.backend.exception.UserNotFoundException;
+import com.bbs.backend.exception.NotFoundException;
+import com.bbs.backend.exception.BadRequestException;
+import com.bbs.backend.exception.UnauthorizedException;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,11 +32,11 @@ public class UserController {
     public ResponseEntity<?> createUser(@Validated @RequestBody UserDTO userDTO) {
         UserEntity userEntity = UserDTO.toEntity(userDTO);
         if (userService.checkExistEmail(userEntity.getEmail())) {
-            throw new UserAlreadyExistsEx("이미 존재하는 이메일입니다.");
+            throw new BadRequestException("이미 존재하는 이메일입니다.");
         }
 
         if (userService.checkExistUsername(userEntity.getUsername())) {
-            throw new UserAlreadyExistsEx("이미 존재하는 닉네임입니다.");
+            throw new BadRequestException("이미 존재하는 닉네임입니다.");
         }
 
         userEntity.setId(UUID.randomUUID().toString());
@@ -55,16 +56,14 @@ public class UserController {
             session.setAttribute(SessionConst.LOGIN_USER, loginOpt.get().getId());
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("아이디 혹은 비밀번호가 일치하지 않습니다");
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+        session.invalidate();
 
         return ResponseEntity.ok().build();
     }
@@ -73,7 +72,7 @@ public class UserController {
     public ResponseEntity<UserInfoDTO> getUserInfo(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String id) {
         UserEntity user = userService.getUserInfo(id);
         if (user == null) {
-            throw new UserNotFoundException("User doesn't exist");
+            throw new NotFoundException("존재하지 않는 회원입니다");
         }
         UserInfoDTO userInfoDTO = new UserInfoDTO(user);
 
@@ -83,10 +82,6 @@ public class UserController {
     @DeleteMapping("/yourAccount")
     public ResponseEntity<?> deleteUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         String id = (String)session.getAttribute(SessionConst.LOGIN_USER);
         userService.deleteUser(id);
         session.invalidate();

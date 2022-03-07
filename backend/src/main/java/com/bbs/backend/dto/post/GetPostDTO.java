@@ -1,7 +1,6 @@
 package com.bbs.backend.dto.post;
 
 import com.bbs.backend.entity.PostEntity;
-import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.LocalDateTime;

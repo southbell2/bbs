@@ -5,20 +5,18 @@ import com.bbs.backend.dto.post.CreatePostDTO;
 import com.bbs.backend.dto.post.GetPostDTO;
 import com.bbs.backend.dto.post.PageDTO;
 import com.bbs.backend.entity.PostEntity;
-import com.bbs.backend.exception.PostNotFoundException;
+import com.bbs.backend.exception.ForbiddenException;
+import com.bbs.backend.exception.NotFoundException;
 import com.bbs.backend.repository.PostRepository;
 import com.bbs.backend.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,7 @@ public class PostController {
     public PageDTO getPostList(@RequestParam(defaultValue = "1") Integer page) {
         List<PostEntity> postEntityList = postRepository.findPageByNumber(page);
         if (postEntityList.size() == 0) {
-            throw new PostNotFoundException("존재하지 않는 페이지 입니다.");
+            throw new NotFoundException("존재하지 않는 페이지 입니다");
         }
 
         PageDTO pageDTO = new PageDTO();
@@ -50,21 +48,20 @@ public class PostController {
     @GetMapping("/posts/{number}")
     @ApiOperation(value = "특정 게시글 보기", notes = "게시글 번호로 특정 게시글 보기")
     public GetPostDTO getPost(@PathVariable int number) {
-        Optional<PostEntity> postEntityOpt = checkPostExists(number);
+        PostEntity postEntity = checkPostExists(number);
 
-        GetPostDTO getPostDTO = new GetPostDTO(postEntityOpt.get());
-
-        return getPostDTO;
+        return new GetPostDTO(postEntity);
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> createPost(@Validated @RequestBody CreatePostDTO createPostDTO, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        String userId = (String) session.getAttribute(SessionConst.LOGIN_USER);
+    public ResponseEntity<?> createPost(
+            @Validated @RequestBody CreatePostDTO createPostDTO,
+            @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
+    ) {
 
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
-        postEntity.setUserId(userId);
-        postEntity.setUsername(userService.getUserInfo(userId).getUsername());
+        postEntity.setUserId(sessionUserId);
+        postEntity.setUsername(userService.getUserInfo(sessionUserId).getUsername());
 
         PostEntity savedPostEntity = postRepository.createPost(postEntity);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -81,10 +78,10 @@ public class PostController {
             @Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
         ) {
-        Optional<PostEntity> foundPostEntityOpt = checkPostExists(number);
+        PostEntity foundPostEntity = checkPostExists(number);
 
-        if (!sessionUserId.equals(foundPostEntityOpt.get().getUserId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!sessionUserId.equals(foundPostEntity.getUserId())) {
+            throw new ForbiddenException("글쓴사람만 글을 수정할 수 있습니다");
         }
 
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
@@ -98,22 +95,22 @@ public class PostController {
             @PathVariable  int number,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
         ) {
-        Optional<PostEntity> foundPostEntityOpt = checkPostExists(number);
+        PostEntity foundPostEntity = checkPostExists(number);
 
-        if (!sessionUserId.equals(foundPostEntityOpt.get().getUserId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!sessionUserId.equals(foundPostEntity.getUserId())) {
+            throw new ForbiddenException("글쓴사람만 글을 삭제할 수 있습니다");
         }
 
         postRepository.deletePost(number);
         return ResponseEntity.ok().build();
     }
 
-    private Optional<PostEntity> checkPostExists(int number) {
+    private PostEntity checkPostExists(int number) {
         Optional<PostEntity> postEntityOpt = postRepository.findPostById(number);
         if (postEntityOpt.isEmpty()) {
-            throw new PostNotFoundException(String.format("Post Number %s not found", number));
+            throw new NotFoundException("글이 존재하지 않습니다");
         }
-        return postEntityOpt;
+        return postEntityOpt.get();
     }
 
 }

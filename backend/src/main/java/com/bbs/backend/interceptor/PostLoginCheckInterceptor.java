@@ -1,6 +1,7 @@
 package com.bbs.backend.interceptor;
 
 import com.bbs.backend.SessionConst;
+import com.bbs.backend.exception.UnauthorizedException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,9 +20,9 @@ public class PostLoginCheckInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(SessionConst.LOGIN_USER) == null) {
-            response.setStatus(401);
-            return false;
+            throw new UnauthorizedException("로그인을 해주세요");
         }
+
         return true;
     }
 }
