@@ -8,9 +8,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Repository
 public class JdbcPostRepository implements PostRepository {
@@ -53,15 +53,16 @@ public class JdbcPostRepository implements PostRepository {
             jdbcTemplate.update("UPDATE posts SET views=? WHERE id=?",
                     ++views, postEntity.getId()
             );
+            postEntity.setViews(views);
         }
 
         return Optional.ofNullable(postEntity);
     }
 
     @Override
-    public void updatePost(PostEntity postEntity) {
+    public void updatePost(PostEntity postEntity, int id) {
         jdbcTemplate.update("UPDATE posts SET title=?, content=? WHERE id=?",
-                postEntity.getTitle(), postEntity.getContent(), postEntity.getId()
+                postEntity.getTitle(), postEntity.getContent(), id
                 );
     }
 

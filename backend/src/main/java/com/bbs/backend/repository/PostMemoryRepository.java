@@ -40,7 +40,7 @@ public class PostMemoryRepository implements PostRepository {
     }
 
     @Override
-    public void updatePost(PostEntity postEntity) {
+    public void updatePost(PostEntity postEntity, int id) {
 //        for (PostEntity post : postEntityList) {
 //            if (post.getId() == postNumber) {
 //                post.setTitle(postEntity.getTitle());

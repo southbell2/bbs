@@ -9,7 +9,7 @@ public interface PostRepository {
     List<PostEntity> findPageByNumber(int number);
     PostEntity createPost(PostEntity postEntity);
     Optional<PostEntity> findPostById(int id);
-    void updatePost(PostEntity postEntity);
+    void updatePost(PostEntity postEntity, int id);
     int getAllPostNumber();
     void deletePost(int id);
 }

@@ -85,7 +85,7 @@ public class PostController {
         }
 
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
-        postRepository.updatePost(postEntity);
+        postRepository.updatePost(postEntity, number);
 
         return ResponseEntity.ok().build();
     }
