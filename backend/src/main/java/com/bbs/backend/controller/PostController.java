@@ -46,7 +46,6 @@ public class PostController {
     }
 
     @GetMapping("/posts/{number}")
-    @ApiOperation(value = "특정 게시글 보기", notes = "게시글 번호로 특정 게시글 보기")
     public GetPostDTO getPost(@PathVariable int number) {
         PostEntity postEntity = checkPostExists(number);
 

@@ -44,6 +44,7 @@ class UserControllerTest {
     WebApplicationContext webApplicationContext;
 
     MockMvc mockMvc;
+
     @Autowired
     UserService userService;
     @Autowired
@@ -263,7 +264,7 @@ class UserControllerTest {
         assertThat(exceptionDTO.getMessage()).isEqualTo("아이디 혹은 비밀번호가 일치하지 않습니다");
 
 
-        ////로그인 실패한 경우 - 비밀번호가 틀린 경우
+        //로그인 실패한 경우 - 비밀번호가 틀린 경우
         LoginDTO loginDTO3 = LoginDTO.builder()
                 .email("spring@test.com")
                 .password("wer1234")

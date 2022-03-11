@@ -1,14 +1,18 @@
 package com.bbs.backend.dto.post;
 
 import com.bbs.backend.entity.PostEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageDTO {
 
     private List<PostForPage> postList;
@@ -19,7 +23,7 @@ public class PageDTO {
     }
 
     @Getter
-    static class PostForPage {
+    public static class PostForPage {
         private int id;
         private String title;
         private String username;
