@@ -1,6 +1,7 @@
 package com.bbs.backend.repository;
 
 import com.bbs.backend.entity.ImageEntity;
+import com.bbs.backend.entity.PostEntity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class JdbcImageRepositoryTest {
 
     @Autowired JdbcImageRepository jdbcImageRepository;
+    @Autowired JdbcPostRepository jdbcPostRepository;
 
     @BeforeEach
     void setUp() {
+        PostEntity postEntity1 = jdbcPostRepository.createPost(PostEntity.builder()
+                .title("test title")
+                .content("test content")
+                .username("james")
+                .userId("test")
+                .build()
+        );
+        PostEntity postEntity2 = jdbcPostRepository.createPost(PostEntity.builder()
+                .title("test title")
+                .content("test content")
+                .username("james")
+                .userId("test2")
+                .build()
+        );
+
+
         List<ImageEntity> imageEntities = new ArrayList<>();
-        imageEntities.add(new ImageEntity(1, UUID.randomUUID().toString() + ".jpg"));
-        imageEntities.add(new ImageEntity(2, UUID.randomUUID().toString() + ".png"));
-        imageEntities.add(new ImageEntity(2, UUID.randomUUID().toString() + ".gif"));
+        imageEntities.add(new ImageEntity(postEntity1.getId(), UUID.randomUUID().toString() + ".jpg"));
+        imageEntities.add(new ImageEntity(postEntity2.getId(), UUID.randomUUID().toString() + ".png"));
+        imageEntities.add(new ImageEntity(postEntity2.getId(), UUID.randomUUID().toString() + ".gif"));
+
+        jdbcImageRepository.saveImage(imageEntities);
     }
 
     @Test

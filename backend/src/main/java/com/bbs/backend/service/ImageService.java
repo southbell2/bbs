@@ -26,16 +26,22 @@ public class ImageService {
         return fileDir +filename;
     }
 
-    public void storeImage(List<MultipartFile> imageFiles, int postId) throws IOException {
+    public List<String> storeImage(List<MultipartFile> imageFiles, int postId) throws IOException {
         List<ImageEntity> imageEntityList = new ArrayList<>();
+        List<String> storedFileNameList = new ArrayList<>();
+
         for (MultipartFile imageFile : imageFiles) {
             if (!imageFile.isEmpty()) {
                 String storeFileName = createStoreFileName(imageFile.getOriginalFilename());
+                storedFileNameList.add(storeFileName);
                 imageFile.transferTo(new File(getFullPath(storeFileName)));
                 imageEntityList.add(new ImageEntity(postId, storeFileName));
             }
         }
+
         imageRepository.saveImage(imageEntityList);
+
+        return storedFileNameList;
     }
 
     private String createStoreFileName(String originalFileName) {
