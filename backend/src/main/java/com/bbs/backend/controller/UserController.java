@@ -10,6 +10,7 @@ import com.bbs.backend.exception.BadRequestException;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,9 +21,9 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Controller
 public class UserController {
     private final UserService userService;
 

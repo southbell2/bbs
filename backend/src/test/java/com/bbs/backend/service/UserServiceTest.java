@@ -19,7 +19,6 @@ import java.util.UUID;
 class UserServiceTest {
 
     @Autowired UserService userService;
-    @Autowired JdbcUserRepository jdbcUserRepository;
 
     public static String savedUUID;
 

@@ -7,32 +7,38 @@ import com.bbs.backend.dto.post.PageDTO;
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.exception.ForbiddenException;
 import com.bbs.backend.exception.NotFoundException;
+import com.bbs.backend.repository.ImageRepository;
 import com.bbs.backend.repository.PostRepository;
+import com.bbs.backend.service.ImageService;
 import com.bbs.backend.service.UserService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@RestController
 @RequestMapping("/bbs")
+@Controller
 public class PostController {
 
     @Autowired
     private final PostRepository postRepository;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final ImageService imageService;
 
     @GetMapping("/posts")
-    public PageDTO getPostList(@RequestParam(defaultValue = "1") Integer page) {
+    public ResponseEntity<PageDTO> getPostList(@RequestParam(defaultValue = "1") Integer page) {
         List<PostEntity> postEntityList = postRepository.findPageByNumber(page);
         if (postEntityList.size() == 0) {
             throw new NotFoundException("존재하지 않는 페이지 입니다");
@@ -42,27 +48,31 @@ public class PostController {
         pageDTO.setPostList(postEntityList);
         pageDTO.setAllPostNumber(postRepository.getAllPostNumber());
 
-        return pageDTO;
+        return ResponseEntity.ok(pageDTO);
     }
 
     @GetMapping("/posts/{number}")
-    public GetPostDTO getPost(@PathVariable int number) {
+    public ResponseEntity<GetPostDTO> getPost(@PathVariable int number) {
         PostEntity postEntity = checkPostExists(number);
 
-        return new GetPostDTO(postEntity);
+        return ResponseEntity.ok(new GetPostDTO(postEntity));
     }
 
     @PostMapping("/post")
     public ResponseEntity<?> createPost(
             @Validated @RequestBody CreatePostDTO createPostDTO,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
-    ) {
-
+    ) throws IOException {
+        //게시글과 관련된 처리
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
         postEntity.setUserId(sessionUserId);
         postEntity.setUsername(userService.getUserInfo(sessionUserId).getUsername());
 
         PostEntity savedPostEntity = postRepository.createPost(postEntity);
+
+        //이미지 파일 처리
+        imageService.storeImage(createPostDTO.getImageFiles(), savedPostEntity.getId());
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("s")
                 .path("/{number}")

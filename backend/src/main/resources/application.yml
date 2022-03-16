@@ -10,3 +10,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: bbs
     password: jong9612!
+
+file:
+  dir: C:\Users\User\Desktop\imagefolder\

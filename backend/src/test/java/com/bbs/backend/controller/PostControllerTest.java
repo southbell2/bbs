@@ -24,8 +24,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
@@ -180,7 +182,7 @@ class PostControllerTest {
         MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
 
         //정상적인 글쓰기
-        CreatePostDTO createPostDTO = new CreatePostDTO("제목 테스트", "내용 테스트");
+        CreatePostDTO createPostDTO = new CreatePostDTO("제목 테스트", "내용 테스트", new ArrayList<MultipartFile>());
         url = "/bbs/post";
         mockMvc.perform(
                 post(url)
@@ -190,7 +192,7 @@ class PostControllerTest {
         ).andExpect(status().isCreated()).andExpect(header().stringValues("location", "http://localhost/bbs/posts/" + (lastId + 1))).andReturn();
 
         //검증에 맞지 않는 경우
-        createPostDTO = new CreatePostDTO("", "내용 테스트");
+        createPostDTO = new CreatePostDTO("", "내용 테스트", new ArrayList<MultipartFile>());
         mvcResult = mockMvc.perform(
                 post(url)
                         .contentType("application/json")
@@ -200,7 +202,7 @@ class PostControllerTest {
         exceptionDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionDTO.class);
         assertThat(exceptionDTO.getMessage()).isEqualTo("제목을 입력하세요");
 
-        createPostDTO = new CreatePostDTO("제목 테스트", "");
+        createPostDTO = new CreatePostDTO("제목 테스트", "", new ArrayList<MultipartFile>());
         mvcResult = mockMvc.perform(
                 post(url)
                         .contentType("application/json")
@@ -210,7 +212,7 @@ class PostControllerTest {
         exceptionDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionDTO.class);
         assertThat(exceptionDTO.getMessage()).isEqualTo("내용을 입력하세요");
 
-        createPostDTO = new CreatePostDTO("012345678901234567890123456789012345678901234567890", "내용 테스트");
+        createPostDTO = new CreatePostDTO("012345678901234567890123456789012345678901234567890", "내용 테스트", new ArrayList<MultipartFile>());
         mvcResult = mockMvc.perform(
                 post(url)
                         .contentType("application/json")
@@ -224,7 +226,7 @@ class PostControllerTest {
     @Test
     void updatePost() throws Exception {
         //로그인 하지 않고 글 수정
-        CreatePostDTO createPostDTO = new CreatePostDTO("제목 수정", "내용 수정");
+        CreatePostDTO createPostDTO = new CreatePostDTO("제목 수정", "내용 수정", new ArrayList<MultipartFile>());
 
         String url = "/bbs/posts/" + lastId;
         MvcResult mvcResult = mockMvc.perform(
