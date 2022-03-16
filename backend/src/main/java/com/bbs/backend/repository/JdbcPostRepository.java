@@ -23,10 +23,8 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public List<PostEntity> findPageByNumber(int number) {
-        List<PostEntity> result =
-                jdbcTemplate.query("SELECT id, title, username, created_at, views FROM posts ORDER BY id DESC LIMIT ?, 10",
-                        pageRowMapper(), (number-1) * 10);
-        return result;
+        return jdbcTemplate.query("SELECT id, title, username, created_at, views FROM posts ORDER BY id DESC LIMIT ?, 10",
+                pageRowMapper(), (number-1) * 10);
     }
 
     @Override
