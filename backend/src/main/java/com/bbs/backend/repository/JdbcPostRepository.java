@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 @Repository
@@ -40,21 +40,58 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public Optional<PostEntity> findPostById(int id) {
-        PostEntity postEntity = null;
-        try {
-            postEntity = jdbcTemplate.queryForObject("SELECT * FROM posts WHERE id=?", postRowMapper(), id);
-        } catch (EmptyResultDataAccessException ignored) {}
+        List<PostEntity> postEntity =  jdbcTemplate.query("SELECT * FROM posts LEFT JOIN images ON posts.id = images.post_id WHERE posts.id = ?", (rs) -> {
+            PostEntity tempPostEntity = null;
+            while (rs.next()) {
+                int postId = rs.getInt("id");
+                String username = rs.getString("username");
+                String title = rs.getString("title");
+                String content = rs.getString("content");
+                LocalDateTime created_at = rs.getTimestamp("created_at").toLocalDateTime();
+                int views = rs.getInt("views");
+                String user_id = rs.getString("user_id");
+                String filename = rs.getString("filename");
 
-        //조회수 1 증가
-        if(postEntity != null) {
-            int views = postEntity.getViews();
+                if (tempPostEntity == null) {
+                    tempPostEntity = PostEntity.builder()
+                            .id(postId)
+                            .username(username)
+                            .title(title)
+                            .content(content)
+                            .createdAt(created_at)
+                            .views(views)
+                            .userId(user_id)
+                            .imageFileNames(new ArrayList<>())
+                            .build();
+                }
+
+                if (filename != null) {
+                    tempPostEntity.getImageFileNames().add(filename);
+                }
+
+            }
+
+            List<PostEntity> list = new ArrayList<>();
+            if (tempPostEntity != null) {
+                list.add(tempPostEntity);
+            }
+
+            return list;
+        }, id);
+
+        Optional<PostEntity> returnOpt = Optional.empty();
+        //글이 존재하면 조회수 1 증가
+        if(!postEntity.isEmpty()) {
+            int views = postEntity.get(0).getViews();
             jdbcTemplate.update("UPDATE posts SET views=? WHERE id=?",
-                    ++views, postEntity.getId()
+                    ++views, postEntity.get(0).getId()
             );
-            postEntity.setViews(views);
+            postEntity.get(0).setViews(views);
+
+            returnOpt = Optional.ofNullable(postEntity.get(0));
         }
 
-        return Optional.ofNullable(postEntity);
+        return returnOpt;
     }
 
     @Override
@@ -72,21 +109,6 @@ public class JdbcPostRepository implements PostRepository {
     @Override
     public void deletePost(int id) {
         jdbcTemplate.update("DELETE FROM posts WHERE id=?", id);
-    }
-
-    private RowMapper<PostEntity> postRowMapper() {
-        return (rs, rowNum) -> {
-            PostEntity postEntity = new PostEntity();
-            postEntity.setUsername(rs.getString("username"));
-            postEntity.setTitle(rs.getString("title"));
-            postEntity.setContent(rs.getString("content"));
-            postEntity.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-            postEntity.setId(rs.getInt("id"));
-            postEntity.setViews(rs.getInt("views"));
-            postEntity.setUserId(rs.getString("user_id"));
-
-            return postEntity;
-        };
     }
 
     private RowMapper<PostEntity> pageRowMapper() {

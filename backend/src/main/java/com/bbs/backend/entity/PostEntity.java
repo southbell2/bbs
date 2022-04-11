@@ -3,6 +3,7 @@ package com.bbs.backend.entity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -16,4 +17,5 @@ public class PostEntity {
     private int id;
     private int views;
     private String userId;
+    private List<String> imageFileNames;
 }
