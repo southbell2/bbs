@@ -343,4 +343,13 @@ class PostControllerTest {
         exceptionDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ExceptionDTO.class);
         assertThat(exceptionDTO.getMessage()).isEqualTo("글이 존재하지 않습니다");
     }
+
+    @Test
+    void showImage() throws Exception {
+        String url = "/bbs/images/pizza.jpg";
+        mockMvc.perform(
+                get(url)
+        ).andExpect(status().isOk()).andExpect(header().string("Content-Type", "image/jpeg;charset=UTF-8")).andReturn();
+
+    }
 }

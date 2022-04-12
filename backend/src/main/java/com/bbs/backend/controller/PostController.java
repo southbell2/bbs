@@ -13,6 +13,9 @@ import com.bbs.backend.service.ImageService;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,6 +119,15 @@ public class PostController {
 
         postRepository.deletePost(number);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> showImage(@PathVariable String filename) throws IOException {
+        Path filePath = Paths.get(imageService.getFullPath(filename));
+        MediaType contentType = MediaType.parseMediaType(Files.probeContentType(filePath));
+
+        return ResponseEntity.ok().contentType(contentType)
+                .body(new UrlResource("file:" + imageService.getFullPath(filename)));
     }
 
     private PostEntity checkPostExists(int number) {
