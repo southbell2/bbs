@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="app.css">
+    <title>BBS</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <form class="container-fluid justify-content-end">
+          <a class="btn btn-outline-primary me-2" href="user/login.html" role="button">로그인</a>
+          <a class="btn btn-outline-primary" href="user/createuser.html" role="button">회원가입</a>
+        </form>
+    </nav>
+
+    <div class="container mt-5">
+        <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 10%" class="text-center">번호</th>
+                <th style="width: 55%" class="text-center">제목</th>
+                <th style="width: 15%" class="text-center">글쓴이</th>
+                <th style="width: 10%" class="text-center">날짜</th>
+                <th style="width: 10%" class="text-center">조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">1</td>
+                <td class="text-center"><a href="read.html" class="link-dark text">테스트 제목 1</a></td>
+                <td class="text-center">Otto</td>
+                <td class="text-center">23:00:00</td>
+                <td class="text-center">13</td>
+              </tr>
+              <tr>
+                <td class="text-center">2</th>
+                <td class="text-center"><a href="read.html" class="link-dark text">알수없음 알수없음 알수없음 알수없음</a></td>
+                <td class="text-center">Thornton</td>
+                <td class="text-center">22:00:00</td>
+                <td class="text-center">3333</td>
+              </tr>
+            </tbody>
+        </table>
+
+        <div class="row mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-between">
+            <a class="btn btn-primary" href="bbs.html" role="button">전체 글</a>
+            <a class="btn btn-primary" href="create.html" role="button">글쓰기</a>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
