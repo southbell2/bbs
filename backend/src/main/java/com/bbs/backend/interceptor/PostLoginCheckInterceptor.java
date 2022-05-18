@@ -14,7 +14,7 @@ public class PostLoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String method = request.getMethod();
-        if (HttpMethod.GET.matches(method)) {
+        if (HttpMethod.GET.matches(method) || HttpMethod.OPTIONS.matches(method)) {
             return true;
         }
 

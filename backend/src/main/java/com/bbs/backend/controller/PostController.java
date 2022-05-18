@@ -46,14 +46,16 @@ public class PostController {
 
     @GetMapping("/posts")
     public ResponseEntity<PageDTO> getPostList(@RequestParam(defaultValue = "1") Integer page) {
-        List<PostEntity> postEntityList = postRepository.findPageByNumber(page);
-        if (postEntityList.size() == 0) {
+        int allPostNumber = postRepository.getAllPostNumber();
+        if (isNotPageExist(allPostNumber, page)) {
             throw new NotFoundException("존재하지 않는 페이지 입니다");
         }
 
+        List<PostEntity> postEntityList = postRepository.findPageByNumber(page);
+
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPostList(postEntityList);
-        pageDTO.setAllPostNumber(postRepository.getAllPostNumber());
+        pageDTO.setAllPostNumber(allPostNumber);
 
         return ResponseEntity.ok(pageDTO);
     }
@@ -136,6 +138,18 @@ public class PostController {
             throw new NotFoundException("글이 존재하지 않습니다");
         }
         return postEntityOpt.get();
+    }
+
+    private boolean isNotPageExist(int allPostNumber, int page) {
+        if (page <= 0) {
+            return true;
+        }
+        //한 페이지당 10개의 글이 보여진다. 총 글의 갯수 보다 많은 페이지를 요구할시
+        if ((allPostNumber - 1) / 10 + 1 < page) {
+            return true;
+        }
+
+        return false;
     }
 
 }

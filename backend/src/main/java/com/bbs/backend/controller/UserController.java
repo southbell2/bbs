@@ -9,6 +9,7 @@ import com.bbs.backend.exception.NotFoundException;
 import com.bbs.backend.exception.BadRequestException;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @Controller
+@Slf4j
 public class UserController {
     private final UserService userService;
 
