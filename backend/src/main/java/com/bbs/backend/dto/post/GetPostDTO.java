@@ -17,14 +17,16 @@ public class GetPostDTO {
     private LocalDateTime createdAt;
     private int id;
     private int views;
+    private boolean writer;
 
-    public GetPostDTO(final PostEntity postEntity) {
+    public GetPostDTO(final PostEntity postEntity, boolean writer) {
         this.username = postEntity.getUsername();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
         this.createdAt = postEntity.getCreatedAt();
         this.id = postEntity.getId();
         this.views = postEntity.getViews();
+        this.writer = writer;
     }
 
 }

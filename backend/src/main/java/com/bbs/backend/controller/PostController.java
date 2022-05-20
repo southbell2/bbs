@@ -61,10 +61,17 @@ public class PostController {
     }
 
     @GetMapping("/posts/{number}")
-    public ResponseEntity<GetPostDTO> getPost(@PathVariable int number) {
+    public ResponseEntity<GetPostDTO> getPost(
+            @PathVariable int number,
+            @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
+    ){
         PostEntity postEntity = checkPostExists(number);
+        boolean isWriter = false;
+        if (sessionUserId != null && sessionUserId.equals(postEntity.getUserId())) {
+            isWriter = true;
+        }
 
-        return ResponseEntity.ok(new GetPostDTO(postEntity));
+        return ResponseEntity.ok(new GetPostDTO(postEntity, isWriter));
     }
 
     @PostMapping("/post")
@@ -80,7 +87,9 @@ public class PostController {
         PostEntity savedPostEntity = postRepository.createPost(postEntity);
 
         //이미지 파일 처리
-        imageService.storeImage(createPostDTO.getImageFiles(), savedPostEntity.getId());
+        if (createPostDTO.getImageFiles() != null) {
+            imageService.storeImage(createPostDTO.getImageFiles(), savedPostEntity.getId());
+        }
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("s")
