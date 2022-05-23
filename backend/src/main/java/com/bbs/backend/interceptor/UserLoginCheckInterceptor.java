@@ -20,7 +20,6 @@ public class UserLoginCheckInterceptor implements HandlerInterceptor {
         }
 
         HttpSession session = request.getSession(false);
-        log.info("COOKIES = {}", request.getCookies());
         if (session == null || session.getAttribute(SessionConst.LOGIN_USER) == null) {
             throw new UnauthorizedException("로그인을 해주세요");
         }

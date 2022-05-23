@@ -59,10 +59,6 @@ class JdbcPostRepositoryTest {
             assertThat(pageByNumber2.get(i).getUsername()).isEqualTo("닉네임" + (12 - i - 10));
             assertThat(pageByNumber2.get(i).getViews()).isEqualTo(0);
         }
-
-        //세번째 부터는 게시글이 존재하지 않음
-        List<PostEntity> pageByNumber3 = jdbcPostRepository.findPageByNumber(3);
-        assertThat(pageByNumber3.size()).isEqualTo(0);
     }
 
     @Test
@@ -97,10 +93,6 @@ class JdbcPostRepositoryTest {
         assertThat(postById.getContent()).isEqualTo("내용 수정");
     }
 
-    @Test
-    void getAllPostNumber() {
-        assertThat(jdbcPostRepository.getAllPostNumber()).isEqualTo(13);
-    }
 
     @Test
     void deletePost() {

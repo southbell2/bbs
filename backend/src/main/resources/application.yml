@@ -10,6 +10,19 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: bbs
     password: jong9612!
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 15MB
+
 
 file:
   dir: C:\Users\User\Desktop\imagefolder\
+
+
+#logging:
+#  level:
+#    org:
+#      apache:
+#        coyote:
+#          http11: debug

@@ -1,5 +1,6 @@
 package com.bbs.backend.controller;
 
+/*
 import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.ExceptionDTO;
 import com.bbs.backend.dto.user.LoginDTO;
@@ -357,3 +358,5 @@ class UserControllerTest {
         assertThat(exceptionDTO.getMessage()).isEqualTo("아이디 혹은 비밀번호가 일치하지 않습니다");
     }
 }
+
+*/

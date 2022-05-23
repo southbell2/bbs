@@ -23,7 +23,7 @@ public class ImageService {
     ImageRepository imageRepository;
 
     public String getFullPath(String filename) {
-        return fileDir +filename;
+        return fileDir + filename;
     }
 
     public List<String> storeImage(List<MultipartFile> imageFiles, int postId) throws IOException {
@@ -42,6 +42,19 @@ public class ImageService {
         imageRepository.saveImage(imageEntityList);
 
         return storedFileNameList;
+    }
+
+    public List<ImageEntity> findByPostId(int postId) {
+        return imageRepository.findByPostId(postId);
+    }
+
+    public void deleteImages(int postId) {
+        List<ImageEntity> imageEntities = findByPostId(postId);
+        for (ImageEntity imageEntity : imageEntities) {
+            String fullPath = getFullPath(imageEntity.getFilename());
+            File savedImageFile = new File(fullPath);
+            savedImageFile.delete();
+        }
     }
 
     private String createStoreFileName(String originalFileName) {

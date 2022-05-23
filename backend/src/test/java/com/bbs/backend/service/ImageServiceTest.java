@@ -38,10 +38,6 @@ class ImageServiceTest {
                 .userId("test")
                 .build()
         );
-
-        FileInputStream fis = new FileInputStream("C:\\Users\\User\\testimage\\pizza.jpg");
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "pizza.jpg", "image/jpeg", fis);
-        multipartFileList.add(mockMultipartFile);
     }
 
     @Test
@@ -53,6 +49,10 @@ class ImageServiceTest {
 
     @Test
     void storeImage() throws IOException {
+        FileInputStream fis = new FileInputStream("C:\\Users\\User\\testimage\\pizza.jpg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "pizza.jpg", "image/jpeg", fis);
+        multipartFileList.add(mockMultipartFile);
+
         //이미지가 저장된 위치 얻기
         List<String> storeImageName = imageService.storeImage(multipartFileList, postEntity.getId());
         String storeImageFullPath = imageService.getFullPath(storeImageName.get(0));
@@ -72,6 +72,7 @@ class ImageServiceTest {
         originalIs.close();
 
         //저장된 파일 삭제
+        System.out.println(storeImageFullPath);
         File savedFile = new File(storeImageFullPath);
         assertThat(savedFile.delete()).isTrue();
     }

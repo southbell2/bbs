@@ -4,6 +4,7 @@ import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.post.CreatePostDTO;
 import com.bbs.backend.dto.post.GetPostDTO;
 import com.bbs.backend.dto.post.PageDTO;
+import com.bbs.backend.entity.ImageEntity;
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.exception.ForbiddenException;
 import com.bbs.backend.exception.NotFoundException;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -66,17 +68,17 @@ public class PostController {
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
     ){
         PostEntity postEntity = checkPostExists(number);
-        boolean isWriter = false;
+        boolean writer = false;
         if (sessionUserId != null && sessionUserId.equals(postEntity.getUserId())) {
-            isWriter = true;
+            writer = true;
         }
 
-        return ResponseEntity.ok(new GetPostDTO(postEntity, isWriter));
+        return ResponseEntity.ok(new GetPostDTO(postEntity, writer));
     }
 
     @PostMapping("/post")
     public ResponseEntity<?> createPost(
-            @Validated @RequestBody CreatePostDTO createPostDTO,
+            @Validated @ModelAttribute CreatePostDTO createPostDTO,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
     ) throws IOException {
         //게시글과 관련된 처리
@@ -128,7 +130,12 @@ public class PostController {
             throw new ForbiddenException("글쓴사람만 글을 삭제할 수 있습니다");
         }
 
+        //이미지파일 삭제
+        imageService.deleteImages(number);
+
+        //글 삭제
         postRepository.deletePost(number);
+
         return ResponseEntity.ok().build();
     }
 
