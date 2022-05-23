@@ -68,12 +68,17 @@ public class PostController {
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
     ){
         PostEntity postEntity = checkPostExists(number);
+
+        //글쓴이 인지 아닌지 체크
         boolean writer = false;
         if (sessionUserId != null && sessionUserId.equals(postEntity.getUserId())) {
             writer = true;
         }
 
-        return ResponseEntity.ok(new GetPostDTO(postEntity, writer));
+        //이미지파일 이름 추가
+        List<ImageEntity> imageEntities = imageService.findByPostId(number);
+
+        return ResponseEntity.ok(new GetPostDTO(postEntity, writer, imageEntities));
     }
 
     @PostMapping("/post")
@@ -104,17 +109,25 @@ public class PostController {
 
     @PutMapping("/posts/{number}")
     public ResponseEntity<?> updatePost(
-            @Validated @RequestBody CreatePostDTO createPostDTO, @PathVariable int number,
+            @Validated @ModelAttribute CreatePostDTO createPostDTO, @PathVariable int number,
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
-        ) {
+        ) throws IOException {
         PostEntity foundPostEntity = checkPostExists(number);
 
         if (!sessionUserId.equals(foundPostEntity.getUserId())) {
             throw new ForbiddenException("글쓴사람만 글을 수정할 수 있습니다");
         }
 
+        //기존에 있던 이미지를 삭제한다
+        imageService.deleteImages(number);
+
         PostEntity postEntity = CreatePostDTO.toEntity(createPostDTO);
         postRepository.updatePost(postEntity, number);
+
+        //이미지 파일 처리
+        if (createPostDTO.getImageFiles() != null) {
+            imageService.storeImage(createPostDTO.getImageFiles(), number);
+        }
 
         return ResponseEntity.ok().build();
     }

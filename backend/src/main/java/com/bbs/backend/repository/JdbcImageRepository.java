@@ -31,6 +31,11 @@ public class JdbcImageRepository implements ImageRepository{
         return jdbcTemplate.query("SELECT * FROM images WHERE post_id=?", imageRowMapper(), postId);
     }
 
+    @Override
+    public void deleteImageByPostId(int postId) {
+        jdbcTemplate.update("DELETE FROM images WHERE post_id=?", postId);
+    }
+
     private RowMapper<ImageEntity> imageRowMapper() {
         return (rs, rowNum) -> {
             ImageEntity imageEntity = new ImageEntity();

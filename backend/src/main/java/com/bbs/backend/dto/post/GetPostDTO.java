@@ -1,9 +1,12 @@
 package com.bbs.backend.dto.post;
 
+import com.bbs.backend.entity.ImageEntity;
 import com.bbs.backend.entity.PostEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Data
@@ -18,8 +21,9 @@ public class GetPostDTO {
     private int id;
     private int views;
     private boolean writer;
+    private List<String> imageFiles = new ArrayList<>();
 
-    public GetPostDTO(final PostEntity postEntity, boolean writer) {
+    public GetPostDTO(final PostEntity postEntity, boolean writer, List<ImageEntity> imageEntities) {
         this.username = postEntity.getUsername();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
@@ -27,6 +31,9 @@ public class GetPostDTO {
         this.id = postEntity.getId();
         this.views = postEntity.getViews();
         this.writer = writer;
+        for (ImageEntity imageEntity : imageEntities) {
+            imageFiles.add(imageEntity.getFilename());
+        }
     }
 
 }

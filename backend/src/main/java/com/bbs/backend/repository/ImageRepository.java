@@ -7,4 +7,5 @@ import java.util.List;
 public interface ImageRepository {
     void saveImage(List<ImageEntity> imageEntities);
     List<ImageEntity> findByPostId(int postId);
+    void deleteImageByPostId(int postId);
 }

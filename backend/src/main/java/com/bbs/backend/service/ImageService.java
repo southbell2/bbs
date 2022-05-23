@@ -55,6 +55,8 @@ public class ImageService {
             File savedImageFile = new File(fullPath);
             savedImageFile.delete();
         }
+
+        imageRepository.deleteImageByPostId(postId);
     }
 
     private String createStoreFileName(String originalFileName) {
