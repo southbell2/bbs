@@ -15,7 +15,7 @@ public class JdbcImageRepository implements ImageRepository{
 
     @Autowired
     public JdbcImageRepository(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override

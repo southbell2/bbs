@@ -23,7 +23,7 @@ public class GetPostDTO {
     private boolean writer;
     private List<String> imageFiles = new ArrayList<>();
 
-    public GetPostDTO(final PostEntity postEntity, boolean writer, List<ImageEntity> imageEntities) {
+    public GetPostDTO(final PostEntity postEntity, boolean writer) {
         this.username = postEntity.getUsername();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
@@ -31,8 +31,8 @@ public class GetPostDTO {
         this.id = postEntity.getId();
         this.views = postEntity.getViews();
         this.writer = writer;
-        for (ImageEntity imageEntity : imageEntities) {
-            imageFiles.add(imageEntity.getFilename());
+        for (String imageFileName : postEntity.getImageFileNames()) {
+            imageFiles.add(imageFileName);
         }
     }
 

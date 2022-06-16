@@ -70,15 +70,9 @@ public class PostController {
         PostEntity postEntity = checkPostExists(number);
 
         //글쓴이 인지 아닌지 체크
-        boolean writer = false;
-        if (sessionUserId != null && sessionUserId.equals(postEntity.getUserId())) {
-            writer = true;
-        }
+        boolean writer = sessionUserId != null && sessionUserId.equals(postEntity.getUserId());
 
-        //이미지파일 이름 추가
-        List<ImageEntity> imageEntities = imageService.findByPostId(number);
-
-        return ResponseEntity.ok(new GetPostDTO(postEntity, writer, imageEntities));
+        return ResponseEntity.ok(new GetPostDTO(postEntity, writer));
     }
 
     @PostMapping("/post")

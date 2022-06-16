@@ -18,7 +18,7 @@ public class JdbcPostRepository implements PostRepository {
 
     @Autowired
     public JdbcPostRepository(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
