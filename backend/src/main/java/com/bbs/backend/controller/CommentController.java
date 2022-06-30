@@ -2,6 +2,7 @@ package com.bbs.backend.controller;
 
 import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.comment.CreateCommentDTO;
+import com.bbs.backend.dto.comment.GetCommentDTO;
 import com.bbs.backend.entity.CommentEntity;
 import com.bbs.backend.entity.UserEntity;
 import com.bbs.backend.repository.CommentRepository;
@@ -51,9 +52,9 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentEntity>> getComment(@RequestParam Integer post, @RequestParam(defaultValue = "1") Integer page) {
-        List<CommentEntity> commentList = commentRepository.findCommentByPostId(post, page);
+    public ResponseEntity<GetCommentDTO> getComment(@RequestParam Integer post, @RequestParam(defaultValue = "1") Integer page) {
+        GetCommentDTO getCommentDTO = new GetCommentDTO(commentRepository.findCommentByPostId(post, page), commentRepository.allCommentNumber(post));
 
-        return ResponseEntity.ok(commentList);
+        return ResponseEntity.ok(getCommentDTO);
     }
 }

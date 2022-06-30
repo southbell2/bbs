@@ -34,6 +34,11 @@ public class JdbcCommentRepository implements CommentRepository{
                 commentRowMapper(), postId, (commentPageNumber-1) * 10).stream().sorted((c1, c2) -> c1.getId() - c2.getId()).toList();
     }
 
+    @Override
+    public int allCommentNumber(int postId) {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM comments WHERE post_id = ?", (rs, rowNum) -> rs.getInt(1), postId);
+    }
+
     private RowMapper<CommentEntity> commentRowMapper() {
         return (rs, rowNum) -> {
             CommentEntity commentEntity = new CommentEntity();

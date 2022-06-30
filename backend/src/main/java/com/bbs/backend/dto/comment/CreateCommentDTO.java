@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CreateCommentDTO {
     @NotBlank(message = "내용을 입력하세요")
-    @Size(max=300, message = "내용은 300자를 넘으면 안 됩니다")
+    @Size(max=100, message = "내용은 100자를 넘으면 안 됩니다")
     private String content;
 
     private int postId;
