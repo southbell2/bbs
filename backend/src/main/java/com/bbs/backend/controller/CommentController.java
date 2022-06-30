@@ -70,6 +70,8 @@ public class CommentController {
             throw new NotFoundException("댓글이 존재하지 않습니다");
         }
 
+        System.out.println(sessionUserId);
+        System.out.println(commentEntity.getUserId());
         if (!sessionUserId.equals(commentEntity.getUserId())) {
             throw new ForbiddenException("댓글 쓴 사람만 글을 삭제할 수 있습니다");
         }

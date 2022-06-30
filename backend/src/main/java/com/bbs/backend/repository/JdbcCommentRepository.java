@@ -39,7 +39,7 @@ public class JdbcCommentRepository implements CommentRepository{
     public CommentEntity findCommentByCommentId(int commentId) {
         CommentEntity commentEntity = null;
         try {
-            commentEntity = jdbcTemplate.queryForObject("SELECT * FROM comments WHERE id=?", commentRowMapper(), commentId);
+            commentEntity = jdbcTemplate.queryForObject("SELECT * FROM comments WHERE id=?", fullCommentRowMapper(), commentId);
         } catch(EmptyResultDataAccessException ignored) {}
 
         return commentEntity;
@@ -63,6 +63,20 @@ public class JdbcCommentRepository implements CommentRepository{
             commentEntity.setContent(rs.getString("content"));
             commentEntity.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
             commentEntity.setPostId(rs.getInt("post_id"));
+
+            return commentEntity;
+        };
+    }
+
+    private RowMapper<CommentEntity> fullCommentRowMapper() {
+        return (rs, rowNum) -> {
+            CommentEntity commentEntity = new CommentEntity();
+            commentEntity.setId(rs.getInt("id" ));
+            commentEntity.setUsername(rs.getString("username"));
+            commentEntity.setContent(rs.getString("content"));
+            commentEntity.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            commentEntity.setPostId(rs.getInt("post_id"));
+            commentEntity.setUserId(rs.getString("user_id"));
 
             return commentEntity;
         };
