@@ -3,6 +3,7 @@ package com.bbs.backend.repository;
 import com.bbs.backend.entity.CommentEntity;
 import com.bbs.backend.entity.PostEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -32,6 +33,21 @@ public class JdbcCommentRepository implements CommentRepository{
     public List<CommentEntity> findCommentByPostId(int postId, int commentPageNumber) {
         return jdbcTemplate.query("SELECT id, username, content, created_at, post_id FROM comments WHERE post_id = ? ORDER BY id DESC LIMIT ?, 10",
                 commentRowMapper(), postId, (commentPageNumber-1) * 10).stream().sorted((c1, c2) -> c1.getId() - c2.getId()).toList();
+    }
+
+    @Override
+    public CommentEntity findCommentByCommentId(int commentId) {
+        CommentEntity commentEntity = null;
+        try {
+            commentEntity = jdbcTemplate.queryForObject("SELECT * FROM comments WHERE id=?", commentRowMapper(), commentId);
+        } catch(EmptyResultDataAccessException ignored) {}
+
+        return commentEntity;
+    }
+
+    @Override
+    public void deleteComment(int commentId) {
+        jdbcTemplate.update("DELETE FROM comments WHERE id=?", commentId);
     }
 
     @Override

@@ -68,5 +68,31 @@ class JdbcCommentRepositoryTest {
         assertThat(comments.get(0).getContent()).isEqualTo("댓글 테스트1");
     }
 
+    @Test
+    void deleteComment() {
+        //11개의 댓글 중 가장 마지막 댓글을 삭제한다
+        List<CommentEntity> comments = jdbcCommentRepository.findCommentByPostId(postId, 1);
+        int commentId = comments.get(9).getId();
+        jdbcCommentRepository.deleteComment(commentId);
+
+        //다시 댓글 얻기, 총 댓글 1~10 까지 존재
+        comments = jdbcCommentRepository.findCommentByPostId(postId, 1);
+        for (int i = 0; i < comments.size(); i++) {
+            int idx = i + 1;
+            assertThat(comments.get(i).getUsername()).isEqualTo("홍길동" + idx);
+            assertThat(comments.get(i).getContent()).isEqualTo("댓글 테스트" + idx);
+        }
+    }
+
+    @Test
+    void findCommentByCommentId() {
+        //11개의 댓글 중 가장 마지막 댓글의 id를 얻는다
+        List<CommentEntity> comments = jdbcCommentRepository.findCommentByPostId(postId, 1);
+        int commentId = comments.get(9).getId();
+
+        CommentEntity commentEntity = jdbcCommentRepository.findCommentByCommentId(commentId);
+        assertThat(commentEntity.getUsername()).isEqualTo("홍길동11");
+        assertThat(commentEntity.getContent()).isEqualTo("댓글 테스트11");
+    }
 
 }

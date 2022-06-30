@@ -5,6 +5,8 @@ import com.bbs.backend.dto.comment.CreateCommentDTO;
 import com.bbs.backend.dto.comment.GetCommentDTO;
 import com.bbs.backend.entity.CommentEntity;
 import com.bbs.backend.entity.UserEntity;
+import com.bbs.backend.exception.ForbiddenException;
+import com.bbs.backend.exception.NotFoundException;
 import com.bbs.backend.repository.CommentRepository;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +58,24 @@ public class CommentController {
         GetCommentDTO getCommentDTO = new GetCommentDTO(commentRepository.findCommentByPostId(post, page), commentRepository.allCommentNumber(post));
 
         return ResponseEntity.ok(getCommentDTO);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable int commentId,
+            @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) String sessionUserId
+    ) {
+        CommentEntity commentEntity = commentRepository.findCommentByCommentId(commentId);
+        if (commentEntity == null) {
+            throw new NotFoundException("댓글이 존재하지 않습니다");
+        }
+
+        if (!sessionUserId.equals(commentEntity.getUserId())) {
+            throw new ForbiddenException("댓글 쓴 사람만 글을 삭제할 수 있습니다");
+        }
+
+        commentRepository.deleteComment(commentId);
+
+        return ResponseEntity.ok().build();
     }
 }

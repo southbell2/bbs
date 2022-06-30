@@ -134,7 +134,7 @@ public class PostController {
         PostEntity foundPostEntity = checkPostExists(number);
 
         if (!sessionUserId.equals(foundPostEntity.getUserId())) {
-            throw new ForbiddenException("글쓴사람만 글을 삭제할 수 있습니다");
+            throw new ForbiddenException("글 쓴 사람만 글을 삭제할 수 있습니다");
         }
 
         //이미지파일 삭제
