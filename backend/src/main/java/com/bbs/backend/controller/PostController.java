@@ -4,13 +4,12 @@ import com.bbs.backend.SessionConst;
 import com.bbs.backend.dto.post.CreatePostDTO;
 import com.bbs.backend.dto.post.GetPostDTO;
 import com.bbs.backend.dto.post.PageDTO;
-import com.bbs.backend.entity.ImageEntity;
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.exception.ForbiddenException;
 import com.bbs.backend.exception.NotFoundException;
-import com.bbs.backend.repository.ImageRepository;
 import com.bbs.backend.repository.PostRepository;
 import com.bbs.backend.service.ImageService;
+import com.bbs.backend.service.LocalImageService;
 import com.bbs.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -148,11 +144,12 @@ public class PostController {
 
     @GetMapping("/images/{filename}")
     public ResponseEntity<Resource> showImage(@PathVariable String filename) throws IOException {
-        Path filePath = Paths.get(imageService.getFullPath(filename));
+        String fullPath = imageService.getFullPath(filename);
+        Path filePath = Paths.get(fullPath);
         MediaType contentType = MediaType.parseMediaType(Files.probeContentType(filePath));
 
         return ResponseEntity.ok().contentType(contentType)
-                .body(new UrlResource("file:" + imageService.getFullPath(filename)));
+                .body(new UrlResource("file:" + fullPath));
     }
 
     private PostEntity checkPostExists(int number) {

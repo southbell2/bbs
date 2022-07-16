@@ -2,8 +2,6 @@ package com.bbs.backend.service;
 
 import com.bbs.backend.entity.PostEntity;
 import com.bbs.backend.repository.JdbcPostRepository;
-import com.bbs.backend.repository.PostRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class ImageServiceTest {
+class LocalImageServiceTest {
 
-    @Autowired ImageService imageService;
+    @Autowired
+    LocalImageService localImageService;
     @Autowired JdbcPostRepository jdbcPostRepository;
 
     public static List<MultipartFile> multipartFileList = new ArrayList<>();
@@ -43,7 +41,7 @@ class ImageServiceTest {
     @Test
     void getFullPath() {
         String filename = "pizza.jpg";
-        String fullPath = imageService.getFullPath(filename);
+        String fullPath = localImageService.getFullPath(filename);
         assertThat(fullPath).isEqualTo("C:\\Users\\User\\Desktop\\imagefolder\\pizza.jpg");
     }
 
@@ -54,8 +52,8 @@ class ImageServiceTest {
         multipartFileList.add(mockMultipartFile);
 
         //이미지가 저장된 위치 얻기
-        List<String> storeImageName = imageService.storeImage(multipartFileList, postEntity.getId());
-        String storeImageFullPath = imageService.getFullPath(storeImageName.get(0));
+        List<String> storeImageName = localImageService.storeImage(multipartFileList, postEntity.getId());
+        String storeImageFullPath = localImageService.getFullPath(storeImageName.get(0));
 
         //저장된 이미지의 FileInputStream
         FileInputStream savedFis = new FileInputStream(storeImageFullPath);
