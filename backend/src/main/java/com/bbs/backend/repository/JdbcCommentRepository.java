@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcCommentRepository implements CommentRepository{
@@ -32,7 +33,7 @@ public class JdbcCommentRepository implements CommentRepository{
     @Override
     public List<CommentEntity> findCommentByPostId(int postId, int commentPageNumber) {
         return jdbcTemplate.query("SELECT id, username, content, created_at, post_id FROM comments WHERE post_id = ? ORDER BY id DESC LIMIT ?, 10",
-                commentRowMapper(), postId, (commentPageNumber-1) * 10).stream().sorted((c1, c2) -> c1.getId() - c2.getId()).toList();
+                commentRowMapper(), postId, (commentPageNumber-1) * 10).stream().sorted((c1, c2) -> c1.getId() - c2.getId()).collect(Collectors.toList());
     }
 
     @Override

@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.bbs'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "16"
+sourceCompatibility = "11"
 
 configurations {
 	compileOnly {
@@ -31,10 +31,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 
 }
 
 test {
 	useJUnitPlatform()
 }
-targetCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_11
