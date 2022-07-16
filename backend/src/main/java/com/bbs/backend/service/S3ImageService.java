@@ -63,11 +63,27 @@ public class S3ImageService implements ImageService{
 
     @Override
     public void deleteImages(int postId) {
+        List<ImageEntity> imageEntities = findByPostId(postId);
+        for (ImageEntity imageEntity : imageEntities) {
+            int idx = imageEntity.getFilename().lastIndexOf('/');
 
+            String filename = imageEntity.getFilename();
+            if (idx != -1) {
+                filename = imageEntity.getFilename().substring(idx);
+            }
+
+            amazonS3Client.deleteObject(bucket, filename);
+        }
+
+        imageRepository.deleteImageByPostId(postId);
     }
 
     private String createStoreFileName(String originalFileName) {
         int idx = originalFileName.lastIndexOf(".");
         return UUID.randomUUID().toString() + originalFileName.substring(idx);
+    }
+
+    private List<ImageEntity> findByPostId(int postId) {
+        return imageRepository.findByPostId(postId);
     }
 }

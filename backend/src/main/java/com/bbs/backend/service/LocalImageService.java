@@ -44,7 +44,7 @@ public class LocalImageService implements ImageService {
         return storedFileNameList;
     }
 
-    public List<ImageEntity> findByPostId(int postId) {
+    private List<ImageEntity> findByPostId(int postId) {
         return imageRepository.findByPostId(postId);
     }
 
