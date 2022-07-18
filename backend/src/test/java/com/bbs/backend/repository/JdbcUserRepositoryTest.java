@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(properties = {"spring.config.location=classpath:application.yml,classpath:aws.yml"})
 class JdbcUserRepositoryTest {
 
     @Autowired JdbcUserRepository jdbcUserRepository;
